@@ -5,50 +5,59 @@
 #include <SerialFlash.h>
 
 // GUItool: begin automatically generated code
-AudioSynthWaveform       filterFreqLfo;     //xy=1112.6666259765625,2377.8886289596558
-AudioSynthWaveform       oscCR1; //xy=1306.6665878295898,2509.88885307312
-AudioSynthNoiseWhite     noiseR1; //xy=1306.666576385498,2556.8887329101562
-AudioSynthWaveform       oscBR1; //xy=1307.6665878295898,2468.88885307312
-AudioSynthWaveform       oscAR1; //xy=1308.6665878295898,2424.88885307312
-AudioSynthWaveform       oscCL1;          //xy=1311.6666259765625,2279.888916015625
-AudioSynthNoiseWhite     noiseL1;         //xy=1311.6666259765625,2326.888916015625
-AudioSynthWaveform       oscBL1;          //xy=1312.6666259765625,2238.888916015625
-AudioSynthWaveform       oscAL1;          //xy=1313.6665878295898,2194.888916015625
-AudioMixer4              voiceMixL1;      //xy=1502.6666564941406,2310.889003753662
-AudioMixer4              voiceMixR1; //xy=1505.6665725708008,2448.888904571533
-AudioEffectEnvelope      envelopeL1;      //xy=1664.5555801391602,2310.778112411499
-AudioEffectEnvelope      envelopeR1; //xy=1664.5555534362793,2448.777792930603
-AudioFilterStateVariable filterR1; //xy=1875.666706085205,2378.889335632324
-AudioFilterStateVariable filterL1;   //xy=1876.6666221618652,2316.8889541625977
-AudioEffectFreeverb      freeverbR1; //xy=2041.5557556152344,2405.7781658172607
-AudioEffectFreeverb      freeverbL1;      //xy=2044.5556945800781,2244.777946472168
-AudioMixer4              mixOutL;         //xy=2209.5557556152344,2301.777946472168
-AudioMixer4              mixOutR; //xy=2209.555809020996,2367.7779998779297
-AudioOutputI2S           i2s1;           //xy=2495.6671981811523,2337.889874458313
-AudioConnection          patchCord1(filterFreqLfo, 0, filterL1, 1);
-AudioConnection          patchCord2(filterFreqLfo, 0, filterR1, 1);
-AudioConnection          patchCord3(oscCR1, 0, voiceMixR1, 2);
-AudioConnection          patchCord4(noiseR1, 0, voiceMixR1, 3);
-AudioConnection          patchCord5(oscBR1, 0, voiceMixR1, 1);
-AudioConnection          patchCord6(oscAR1, 0, voiceMixR1, 0);
-AudioConnection          patchCord7(oscCL1, 0, voiceMixL1, 2);
-AudioConnection          patchCord8(noiseL1, 0, voiceMixL1, 3);
-AudioConnection          patchCord9(oscBL1, 0, voiceMixL1, 1);
-AudioConnection          patchCord10(oscAL1, 0, voiceMixL1, 0);
-AudioConnection          patchCord11(voiceMixL1, envelopeL1);
-AudioConnection          patchCord12(voiceMixR1, envelopeR1);
-AudioConnection          patchCord13(envelopeL1, 0, filterL1, 0);
-AudioConnection          patchCord14(envelopeR1, 0, filterR1, 0);
-AudioConnection          patchCord15(filterR1, 0, mixOutR, 1);
-AudioConnection          patchCord16(filterR1, 0, freeverbR1, 0);
-AudioConnection          patchCord17(filterL1, 0, freeverbL1, 0);
-AudioConnection          patchCord18(filterL1, 0, mixOutL, 1);
-AudioConnection          patchCord19(freeverbR1, 0, mixOutR, 0);
-AudioConnection          patchCord20(freeverbL1, 0, mixOutL, 0);
-AudioConnection          patchCord21(mixOutL, 0, i2s1, 0);
-AudioConnection          patchCord22(mixOutR, 0, i2s1, 1);
-AudioControlSGTL5000     sgtl5000_1;     //xy=2366.6668586730957,2211.889002799988
+AudioSynthWaveform       oscFreqLfo1;      //xy=992.5555572509766,2290.777837753296
+AudioSynthWaveformModulated filterFreqLfo;  //xy=992.5555458068848,2415.7778453826904
+AudioSynthWaveform       oscFreqLfo2; //xy=993.5555419921875,2335.778112411499
+AudioSynthWaveformModulated oscCR1;         //xy=1211.5555419921875,2552.77783203125
+AudioSynthNoiseWhite     noiseR1;        //xy=1211.5555419921875,2599.77783203125
+AudioSynthWaveformModulated oscBR1;         //xy=1212.5555419921875,2511.77783203125
+AudioSynthWaveformModulated oscAR1;         //xy=1213.5555419921875,2467.77783203125
+AudioSynthWaveformModulated oscCL1;         //xy=1216.5555419921875,2322.77783203125
+AudioSynthNoiseWhite     noiseL1;        //xy=1216.5555419921875,2369.77783203125
+AudioSynthWaveformModulated oscBL1;         //xy=1217.5555419921875,2281.77783203125
+AudioSynthWaveformModulated oscAL1;         //xy=1218.5555419921875,2237.77783203125
+AudioMixer4              voiceMixL1;     //xy=1407.5555419921875,2353.77783203125
+AudioMixer4              voiceMixR1;     //xy=1410.5555419921875,2491.77783203125
+AudioEffectEnvelope      envelopeL1;     //xy=1569.5555419921875,2353.77783203125
+AudioEffectEnvelope      envelopeR1;     //xy=1569.5555419921875,2491.77783203125
+AudioFilterStateVariable filterR1;       //xy=1780.5555419921875,2421.77783203125
+AudioFilterStateVariable filterL1;       //xy=1781.5555419921875,2359.77783203125
+AudioEffectFreeverb      freeverbR1;     //xy=1946.5555419921875,2448.77783203125
+AudioEffectFreeverb      freeverbL1;     //xy=1949.5555419921875,2287.77783203125
+AudioMixer4              mixOutL;        //xy=2114.5555419921875,2344.77783203125
+AudioMixer4              mixOutR;        //xy=2114.5555419921875,2410.77783203125
+AudioOutputI2S           i2s1;           //xy=2400.5555419921875,2380.77783203125
+AudioConnection          patchCord1(oscFreqLfo1, 0, oscAL1, 0);
+AudioConnection          patchCord2(oscFreqLfo1, 0, oscCL1, 0);
+AudioConnection          patchCord3(oscFreqLfo1, 0, oscBR1, 0);
+AudioConnection          patchCord4(filterFreqLfo, 0, filterL1, 1);
+AudioConnection          patchCord5(filterFreqLfo, 0, filterR1, 1);
+AudioConnection          patchCord6(oscFreqLfo2, 0, oscBL1, 0);
+AudioConnection          patchCord7(oscFreqLfo2, 0, oscAR1, 0);
+AudioConnection          patchCord8(oscFreqLfo2, 0, oscCR1, 0);
+AudioConnection          patchCord9(oscCR1, 0, voiceMixR1, 2);
+AudioConnection          patchCord10(noiseR1, 0, voiceMixR1, 3);
+AudioConnection          patchCord11(oscBR1, 0, voiceMixR1, 1);
+AudioConnection          patchCord12(oscAR1, 0, voiceMixR1, 0);
+AudioConnection          patchCord13(oscCL1, 0, voiceMixL1, 2);
+AudioConnection          patchCord14(noiseL1, 0, voiceMixL1, 3);
+AudioConnection          patchCord15(oscBL1, 0, voiceMixL1, 1);
+AudioConnection          patchCord16(oscAL1, 0, voiceMixL1, 0);
+AudioConnection          patchCord17(voiceMixL1, envelopeL1);
+AudioConnection          patchCord18(voiceMixR1, envelopeR1);
+AudioConnection          patchCord19(envelopeL1, 0, filterL1, 0);
+AudioConnection          patchCord20(envelopeR1, 0, filterR1, 0);
+AudioConnection          patchCord21(filterR1, 0, mixOutR, 1);
+AudioConnection          patchCord22(filterR1, 0, freeverbR1, 0);
+AudioConnection          patchCord23(filterL1, 0, freeverbL1, 0);
+AudioConnection          patchCord24(filterL1, 0, mixOutL, 1);
+AudioConnection          patchCord25(freeverbR1, 0, mixOutR, 0);
+AudioConnection          patchCord26(freeverbL1, 0, mixOutL, 0);
+AudioConnection          patchCord27(mixOutL, 0, i2s1, 0);
+AudioConnection          patchCord28(mixOutR, 0, i2s1, 1);
+AudioControlSGTL5000     sgtl5000_1;     //xy=2271.5555419921875,2254.77783203125
 // GUItool: end automatically generated code
+
 
 
 #include "Gaussian.h"
@@ -69,10 +78,10 @@ void MIDIccData(int CCnumber, float ccValue)
   }
   if(CCnumber == 104)
   {
-    if(ccValue == 0){ ccValues[CCnumber] = 174.61f; }
-    if(ccValue == 1){ ccValues[CCnumber] = 196.00f; }
-    if(ccValue == 2){ ccValues[CCnumber] = 207.65f; }
-    if(ccValue == 3){ ccValues[CCnumber] = 233.08f; }
+    if(ccValue == 0){ ccValues[CCnumber] = 73.42f; }
+    if(ccValue == 1){ ccValues[CCnumber] = 87.31f; }
+    if(ccValue == 2){ ccValues[CCnumber] = 98.00f; }
+    if(ccValue == 3){ ccValues[CCnumber] = 110.00f; }
     envelopeL1.noteOn();
     envelopeR1.noteOn();
     return;
@@ -114,13 +123,22 @@ void setup(void)
   filterFreqLfo.offset(0);
   filterFreqLfo.begin(0.3f, 0.15, WAVEFORM_TRIANGLE);
 
-  oscAL1.begin(1.0f, ccValues[104], WAVEFORM_SINE);
-  oscBL1.begin(1.0f, ccValues[104], WAVEFORM_SAWTOOTH);
-  oscCL1.begin(1.0f, ccValues[104], WAVEFORM_TRIANGLE);
+  oscFreqLfo1.begin(0.001f, 0.2f, WAVEFORM_SINE);
+  oscFreqLfo2.begin(0.001f, 0.2f, WAVEFORM_SINE);
 
-  oscAR1.begin(1.0f, ccValues[104], WAVEFORM_SINE);
-  oscBR1.begin(1.0f, ccValues[104], WAVEFORM_SAWTOOTH);
-  oscCR1.begin(1.0f, ccValues[104], WAVEFORM_TRIANGLE);
+  oscAL1.begin(1.0f, ccValues[104], WAVEFORM_SQUARE);
+  oscAL1.frequencyModulation(1);
+  oscBL1.begin(1.0f, ccValues[104], WAVEFORM_TRIANGLE);
+  oscBL1.frequencyModulation(1);
+  oscCL1.begin(1.0f, ccValues[104], WAVEFORM_SQUARE);
+  oscCL1.frequencyModulation(1);
+
+  oscAR1.begin(1.0f, ccValues[104], WAVEFORM_SQUARE);
+  oscAL1.frequencyModulation(1);
+  oscBR1.begin(1.0f, ccValues[104], WAVEFORM_TRIANGLE);
+  oscBL1.frequencyModulation(1);
+  oscCR1.begin(1.0f, ccValues[104], WAVEFORM_SQUARE);
+  oscCL1.frequencyModulation(1);
 
   freeverbL1.roomsize(0.5);
   freeverbL1.damping(0.5);
