@@ -184,8 +184,8 @@ void loop() {
 
   float freq = ccValues[104]; 
   float oscAFreq = freq;
-  float oscBFreq = oscAFreq + (ccValues[103]-64.0)/8.0;
-  float oscCFreq = oscAFreq + (ccValues[103]-64.0)/4.0;
+  float oscBFreq = oscAFreq + (ccValues[103]-64.0)/18.0;
+  float oscCFreq = oscAFreq + (ccValues[103]-64.0)/16.0;
   
   oscAL1.frequency(max(0, oscAFreq + jitL * oscAFreq/48.0));
   oscBL1.frequency(max(0, oscBFreq - jitL * oscAFreq/31.0));
