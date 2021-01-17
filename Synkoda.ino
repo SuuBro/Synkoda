@@ -59,7 +59,6 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=2271.5555419921875,2254.7778320312
 // GUItool: end automatically generated code
 
 
-
 #include "Gaussian.h"
 
 //a table to store CC values coming in from the usbMIDI interface
@@ -171,8 +170,8 @@ float jitter()
 void updateFilterFreq(float jitL, float jitR)
 {
   float filterFreq = map(ccValues[101], 0, 127, 0, 5000);
-  filterL1.frequency(filterFreq - 20 + jitL*20.0);
-  filterR1.frequency(filterFreq - 20 + jitR*20.0);
+  filterL1.frequency(filterFreq - 20 + jitL*60.0);
+  filterR1.frequency(filterFreq - 20 - jitR*60.0);
 }
 
 float maxCpu = 0;
@@ -188,11 +187,11 @@ void loop() {
   float oscBFreq = oscAFreq + (ccValues[103]-64.0)/8.0;
   float oscCFreq = oscAFreq + (ccValues[103]-64.0)/4.0;
   
-  oscAL1.frequency(max(0, oscAFreq + jitL * oscAFreq/62.0));
-  oscBL1.frequency(max(0, oscBFreq + jitL * oscAFreq/31.0));
+  oscAL1.frequency(max(0, oscAFreq + jitL * oscAFreq/48.0));
+  oscBL1.frequency(max(0, oscBFreq - jitL * oscAFreq/31.0));
   oscCL1.frequency(max(0, oscCFreq + jitL * oscAFreq/43.0));  
-  oscAR1.frequency(max(0, oscAFreq + jitR * oscAFreq/58.0));
-  oscBR1.frequency(max(0, oscBFreq + jitR * oscAFreq/29.0));
+  oscAR1.frequency(max(0, oscAFreq + jitR * oscAFreq/37.0));
+  oscBR1.frequency(max(0, oscBFreq - jitR * oscAFreq/29.0));
   oscCR1.frequency(max(0, oscCFreq + jitR * oscAFreq/47.0));  
 
   updateFilterFreq(jitL, jitR);
