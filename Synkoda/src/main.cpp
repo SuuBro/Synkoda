@@ -25,7 +25,7 @@ Encoder myEnc4(32, 31);
 const int numInputs = 5;
 
 Encoder* encoders[numInputs] = {&myEnc0, &myEnc1, &myEnc2, &myEnc3, &myEnc4};
-long ccAssignments[numInputs] = {101, 102, 103, 104, 105};
+long ccAssignments[numInputs] = {100, 101, 102, 103, 104};
 
 ViewLevel lev0(&pixels, 64, 6, 0,   10, 10);
 ViewLevel lev1(&pixels, 48, 5, 0,   6, 23);
