@@ -168,8 +168,6 @@ void loop() {
       Serial.print("Encoder ");
       Serial.print(i);
       Serial.print(": ");
-      Serial.print(change);
-      Serial.print(" ");
       int newValue = ccValues[ccAssignments[i]] + change;
       if(newValue < 0){
         newValue = 0;
@@ -177,6 +175,8 @@ void loop() {
       else if(newValue >= 127){
         newValue = 127;
       }
+      Serial.print(newValue);
+      Serial.println(" ");
       ccValues[ccAssignments[i]] = newValue;
     }
     levelIndicators[i]->setLevel(ccValues[ccAssignments[i]]);
