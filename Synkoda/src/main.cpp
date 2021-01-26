@@ -25,13 +25,13 @@ Encoder myEnc4(32, 31);
 const int numInputs = 5;
 
 Encoder* encoders[numInputs] = {&myEnc0, &myEnc1, &myEnc2, &myEnc3, &myEnc4};
-long encoderPostions[numInputs] = {0, 0, 0, 0, 0};
+long ccAssignments[numInputs] = {101, 102, 103, 104, 105};
 
-ViewLevel lev0(&pixels, 64, 6, 0,   100, 100);
-ViewLevel lev1(&pixels, 48, 5, 0,   60, 230);
-ViewLevel lev2(&pixels, 16, 0, 0,   30, 160);
-ViewLevel lev3(&pixels, 32, 1, 0,   0, 80);
-ViewLevel lev4(&pixels, 0, 13, 30, 100, 100);
+ViewLevel lev0(&pixels, 64, 6, 0,   10, 10);
+ViewLevel lev1(&pixels, 48, 5, 0,   6, 23);
+ViewLevel lev2(&pixels, 16, 0, 0,   3, 16);
+ViewLevel lev3(&pixels, 32, 1, 0,   0, 8);
+ViewLevel lev4(&pixels, 0, 13, 3,  10, 10);
 
 ViewLevel* levelIndicators[numInputs] = {&lev0, &lev1, &lev2, &lev3, &lev4};
 
@@ -46,14 +46,6 @@ float jitterTrack;
 
 void MIDIccData(int CCnumber, float ccValue)
 {
-  if(CCnumber == 104)
-  {
-    if(ccValue == 0){ ccValues[CCnumber] = 73.42f; }
-    if(ccValue == 1){ ccValues[CCnumber] = 87.31f; }
-    if(ccValue == 2){ ccValues[CCnumber] = 98.00f; }
-    if(ccValue == 3){ ccValues[CCnumber] = 110.00f; }
-    return;
-  }
   //assign values to the CC lookup table
   ccValues[CCnumber] = ccValue;
 }
@@ -62,7 +54,6 @@ void OnControlChange (byte Channel, byte control, byte value)
 {
   MIDIccData(control, value);
 }
-
 
 void setup(void)
 {
@@ -169,8 +160,7 @@ void loop() {
       Serial.print(i);
       Serial.println(buttonStates[i] == 0 ? ": Off" : ": On");
       if(buttonStates[i] == 1){
-        encoderPostions[i] = 0;
-        levelIndicators[i]->setLevel(encoderPostions[i]);
+        ccValues[ccAssignments[i]] = 0;
       }
     }
 
@@ -182,16 +172,16 @@ void loop() {
       Serial.print(": ");
       Serial.print(change);
       Serial.print(" ");
-      encoderPostions[i] += change;
-      if(encoderPostions[i] < 0){
-        encoderPostions[i] = 0;
+      int newValue = ccValues[ccAssignments[i]] + change;
+      if(newValue < 0){
+        newValue = 0;
       }
-      else if(encoderPostions[i] >= 160){
-        encoderPostions[i] = 160;
+      else if(newValue >= 127){
+        newValue = 127;
       }
-      Serial.println(encoderPostions[i]);
-      levelIndicators[i]->setLevel(encoderPostions[i]);
+      ccValues[ccAssignments[i]] = newValue;
     }
+    levelIndicators[i]->setLevel(ccValues[ccAssignments[i]]);
   }
 
   float jitL = jitter();
