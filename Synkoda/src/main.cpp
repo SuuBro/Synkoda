@@ -38,8 +38,6 @@ ViewLevel* levelIndicators[numInputs] = {&lev0, &lev1, &lev2, &lev3, &lev4};
 int buttonPins[numInputs] = {37, 38, 41, 39, 40};
 int buttonStates[numInputs] = {-999, -999, -999, -999, -999};
 
-//a table to store CC values coming in from the usbMIDI interface
-//later any value can be recalled for each parameter
 int ccValues[128] = {0};
 Gaussian jitterSource;
 float jitterTrack;
