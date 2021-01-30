@@ -22,8 +22,6 @@ AudioEffectEnvelope      envelopeL1;     //xy=1569.5555419921875,2353.7778320312
 AudioEffectEnvelope      envelopeR1;     //xy=1569.5555419921875,2491.77783203125
 AudioFilterStateVariable filterR1;       //xy=1780.5555419921875,2421.77783203125
 AudioFilterStateVariable filterL1;       //xy=1781.5555419921875,2359.77783203125
-AudioEffectFreeverb      freeverbR1;     //xy=1946.5555419921875,2448.77783203125
-AudioEffectFreeverb      freeverbL1;     //xy=1949.5555419921875,2287.77783203125
 AudioMixer4              mixOutL;        //xy=2114.5555419921875,2344.77783203125
 AudioMixer4              mixOutR;        //xy=2114.5555419921875,2410.77783203125
 AudioOutputI2S           i2s1;           //xy=2400.5555419921875,2380.77783203125
@@ -48,12 +46,8 @@ AudioConnection          patchCord18(voiceMixR1, envelopeR1);
 AudioConnection          patchCord19(envelopeL1, 0, filterL1, 0);
 AudioConnection          patchCord20(envelopeR1, 0, filterR1, 0);
 AudioConnection          patchCord21(filterR1, 0, mixOutR, 1);
-AudioConnection          patchCord22(filterR1, 0, freeverbR1, 0);
-AudioConnection          patchCord23(filterL1, 0, freeverbL1, 0);
-AudioConnection          patchCord24(filterL1, 0, mixOutL, 1);
-AudioConnection          patchCord25(freeverbR1, 0, mixOutR, 0);
-AudioConnection          patchCord26(freeverbL1, 0, mixOutL, 0);
-AudioConnection          patchCord27(mixOutL, 0, i2s1, 0);
-AudioConnection          patchCord28(mixOutR, 0, i2s1, 1);
+AudioConnection          patchCord22(filterL1, 0, mixOutL, 1);
+AudioConnection          patchCord23(mixOutL, 0, i2s1, 0);
+AudioConnection          patchCord24(mixOutR, 0, i2s1, 1);
 AudioControlSGTL5000     sgtl5000_1;     //xy=2271.5555419921875,2254.77783203125
 // GUItool: end automatically generated code

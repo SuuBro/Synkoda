@@ -28,7 +28,7 @@ void ViewLevel::setLevel(int level)
 {
   int numLights = ((level / 127.0) * 16.0);
   int mod = (level - (numLights * 8.0));
-  int extra = mod == 0 ? 0 : map(mod, 0.0, 8.0, 3.0, 8.0);
+  int extra = mod == 0 ? 0 : map(mod, 0.0, 8.0, 2.1, 8.0);
   for (int l = _firstIndex + 15; l >= _firstIndex; --l)
   {
     int rotated = l - _rotation;
