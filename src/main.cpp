@@ -10,12 +10,6 @@
 
 #include "Display.h"
 
-const int MIDICC_RELEASE = 72;
-const int MIDICC_ATTACK = 73;
-const int MIDICC_FILTERCUTOFF = 74;
-const int MIDICC_JITTER = 102;
-const int MIDICC_DETUNE = 103;
-
 const int numInputs = 5;
 
 Encoder myEnc0(25, 26);
@@ -25,7 +19,6 @@ Encoder myEnc3(27, 28);
 Encoder myEnc4(29, 30);
 
 Encoder* encoders[numInputs] = {&myEnc0, &myEnc1, &myEnc2, &myEnc3, &myEnc4};
-long ccAssignments[numInputs] = {MIDICC_ATTACK, MIDICC_RELEASE, MIDICC_FILTERCUTOFF, MIDICC_JITTER, MIDICC_DETUNE};
 
 Display display = Display();
 
@@ -34,14 +27,9 @@ int buttonStates[numInputs] = {-999, -999, -999, -999, -999};
 
 int _ccValues[128] = {0};
 
-void MIDIccData(int cc, float value)
-{
-  _ccValues[cc] = value;
-}
-
 void OnControlChange (byte Channel, byte control, byte value)
 {
-  MIDIccData(control, value);
+  _ccValues[control] = value;
 }
 
 void OnNoteOn(byte channel, byte note, byte velocity)
@@ -63,13 +51,13 @@ void setup(void)
     pinMode(buttonPins[i], INPUT_PULLDOWN);
   }
 
-  LEDS.setBrightness(84);
+  LEDS.setBrightness(100);
 
-  _ccValues[MIDICC_RELEASE] = 5;
-  _ccValues[MIDICC_ATTACK] = 10;
-  _ccValues[MIDICC_FILTERCUTOFF] = 64;
-  _ccValues[MIDICC_JITTER] = 2;
-  _ccValues[MIDICC_DETUNE] = 64;
+  _ccValues[100] = 67;
+  _ccValues[101] = 67;
+  _ccValues[102] = 67;
+  _ccValues[103] = 67;
+  _ccValues[104] = 67;
 
   usbMIDI.setHandleControlChange(OnControlChange);
   usbMIDI.setHandleNoteOn(OnNoteOn);
@@ -80,6 +68,8 @@ void setup(void)
 
 float maxCpu = 0;
 
+int inertia = 0;
+
 void loop() {
 
   usbMIDI.read();
@@ -89,22 +79,28 @@ void loop() {
     int newBtnState = digitalRead(buttonPins[i]);
     if(newBtnState != buttonStates[i])
     {
+      inertia = 0;
       buttonStates[i] = newBtnState;
       Serial.print("Button ");
       Serial.print(i);
       Serial.println(buttonStates[i] == 0 ? ": Off" : ": On");
       if(buttonStates[i] == 1){
-        _ccValues[ccAssignments[i]] = 0;
+        _ccValues[100+i] = 0;
       }
     }
 
     long change = encoders[i]->readAndReset();
     if(change != 0)
     {
+      if((change > 0 && inertia <= 0) || (change < 0 && inertia >= 0)){
+        inertia = change;
+        break;
+      }
+      inertia = change;
       Serial.print("Encoder ");
       Serial.print(i);
       Serial.print(": ");
-      int newValue = _ccValues[ccAssignments[i]] + change;
+      int newValue = _ccValues[100+i] + change;
       if(newValue < 0){
         newValue = 0;
       }
@@ -113,9 +109,10 @@ void loop() {
       }
       Serial.print(newValue);
       Serial.println(" ");
-      _ccValues[ccAssignments[i]] = newValue;
+      _ccValues[100+i] = newValue;
+      usbMIDI.sendControlChange(100+i, newValue, 1);
     }
-    display.setLevel(i, _ccValues[ccAssignments[i]]);
+    display.setLevel(i, _ccValues[100+i]);
   }
 
   if(AudioProcessorUsageMax() > maxCpu){
