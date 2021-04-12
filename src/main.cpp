@@ -40,9 +40,7 @@ int _bankCCMap[4][4] = {
   {MIDICC_DELAYAMOUNT, MIDICC_DELAYRATE, MIDICC_REVERBAMOUNT, MIDICC_SIDECHAINAMOUNT},
 };
 
-int bank = 0;
 int _ccValues[128] = {0};
-int channel = 0;
 
 void OnControlChange (byte Channel, byte control, byte value)
 {
@@ -51,10 +49,12 @@ void OnControlChange (byte Channel, byte control, byte value)
 
 void OnNoteOn(byte channel, byte note, byte velocity)
 {
+
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity)
 {
+
 }
 
 void setup(void)
@@ -85,16 +85,6 @@ float maxCpu = 0;
 
 int inertia = 0;
 
-void handleButtonPress(int buttonIndex)
-{
-  if(buttonIndex < 4){
-    for (size_t ring = 0; ring < 4; ring++)
-    {
-      display.setColour(ring, _bankColours[buttonIndex]);
-    }
-  }
-}
-
 void loop() {
 
   usbMIDI.read();
@@ -104,10 +94,16 @@ void loop() {
     int newBtnState = digitalRead(buttonPins[i]);
     if(newBtnState != buttonStates[i])
     {
+      inertia = 0;
       buttonStates[i] = newBtnState;
-      if (buttonStates[i] == 1)
-      {
-         handleButtonPress(i);
+      Serial.print("Button ");
+      Serial.print(i);
+      Serial.println(buttonStates[i] == 0 ? ": Off" : ": On");
+      if(buttonStates[i] == 1){
+        for (size_t ring = 0; ring < 4; ring++)
+        {
+          display.setColour(ring, _bankColours[i]);
+        }
       }
     }
 
@@ -122,9 +118,7 @@ void loop() {
       Serial.print("Encoder ");
       Serial.print(i);
       Serial.print(": ");
-      int cc = 12; // _bankCCMap[bank][i];
-      int oldValue = _ccValues[cc];
-      int newValue = oldValue + change;
+      int newValue = _ccValues[100+i] + change;
       if(newValue < 0){
         newValue = 0;
       }
@@ -133,11 +127,10 @@ void loop() {
       }
       Serial.print(newValue);
       Serial.println(" ");
-      _ccValues[cc] = newValue;
-      usbMIDI.sendControlChange(cc, newValue, 1);
+      _ccValues[100+i] = newValue;
+      usbMIDI.sendControlChange(100+i, newValue, 1);
     }
-
-    display.setLevel(i, _bankCCMap[bank][i]);
+    display.setLevel(i, _ccValues[100+i]);
   }
 
   if(AudioProcessorUsageMax() > maxCpu){
