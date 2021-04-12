@@ -40,9 +40,9 @@ int _bankCCMap[4][4] = {
   {MIDICC_DELAYAMOUNT, MIDICC_DELAYRATE, MIDICC_REVERBAMOUNT, MIDICC_SIDECHAINAMOUNT},
 };
 
-int bank = 0;
+int _currentBank = 0;
 int _ccValues[128] = {0};
-int channel = 0;
+int _channel = 0;
 
 void OnControlChange (byte Channel, byte control, byte value)
 {
@@ -66,13 +66,12 @@ void setup(void)
     pinMode(buttonPins[i], INPUT_PULLDOWN);
   }
 
-  LEDS.setBrightness(100);
+  for(int i = 0; i < 127; ++i)
+  {
+    _ccValues[i] = 67;
+  }
 
-  _ccValues[100] = 67;
-  _ccValues[101] = 67;
-  _ccValues[102] = 67;
-  _ccValues[103] = 67;
-  _ccValues[104] = 67;
+  LEDS.setBrightness(150);
 
   usbMIDI.setHandleControlChange(OnControlChange);
   usbMIDI.setHandleNoteOn(OnNoteOn);
@@ -90,6 +89,7 @@ void handleButtonPress(int buttonIndex)
   if(buttonIndex < 4){
     for (size_t ring = 0; ring < 4; ring++)
     {
+      _currentBank = buttonIndex;
       display.setColour(ring, _bankColours[buttonIndex]);
     }
   }
@@ -99,7 +99,7 @@ void loop() {
 
   usbMIDI.read();
 
-  for(int i = 0; i < numInputs; ++i)
+  for(int i = 0; i < 4; ++i)
   {
     int newBtnState = digitalRead(buttonPins[i]);
     if(newBtnState != buttonStates[i])
@@ -122,7 +122,7 @@ void loop() {
       Serial.print("Encoder ");
       Serial.print(i);
       Serial.print(": ");
-      int cc = 12; // _bankCCMap[bank][i];
+      int cc = _bankCCMap[_currentBank][i];
       int oldValue = _ccValues[cc];
       int newValue = oldValue + change;
       if(newValue < 0){
@@ -137,7 +137,7 @@ void loop() {
       usbMIDI.sendControlChange(cc, newValue, 1);
     }
 
-    display.setLevel(i, _bankCCMap[bank][i]);
+    display.setLevel(i, _ccValues[_bankCCMap[_currentBank][i]]);
   }
 
   if(AudioProcessorUsageMax() > maxCpu){
