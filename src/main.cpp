@@ -9,6 +9,7 @@
 #include <FastLED.h>
 
 #include "Display.h"
+#include "MidiCC.h"
 
 const int numInputs = 5;
 
@@ -24,6 +25,20 @@ Display display = Display();
 
 int buttonPins[numInputs] = {37, 41, 40, 38, 39};
 int buttonStates[numInputs] = {-999, -999, -999, -999, -999};
+
+CHSV _bankColours[4] = {
+  CHSV(100, 255, 255),
+  CHSV(120, 255, 255),
+  CHSV(160, 255, 255),
+  CHSV(220, 255, 255),
+};
+
+int _bankCCMap[4][4] = {
+  {MIDICC_OSCP1, MIDICC_OSCP2, MIDICC_OSCP3, MIDICC_OSCP4},
+  {MIDICC_ENV1ATTACK, MIDICC_ENV1DECAY, MIDICC_ENV1SUSTAIN, MIDICC_ENV1RELEASE},
+  {MIDICC_VOLUME, MIDICC_PAN, MIDICC_EQBASS, MIDICC_EQTREBLE},
+  {MIDICC_DELAYAMOUNT, MIDICC_DELAYRATE, MIDICC_REVERBAMOUNT, MIDICC_SIDECHAINAMOUNT},
+};
 
 int _ccValues[128] = {0};
 
@@ -85,7 +100,10 @@ void loop() {
       Serial.print(i);
       Serial.println(buttonStates[i] == 0 ? ": Off" : ": On");
       if(buttonStates[i] == 1){
-        _ccValues[100+i] = 0;
+        for (size_t ring = 0; ring < 4; ring++)
+        {
+          display.setColour(ring, _bankColours[i]);
+        }
       }
     }
 

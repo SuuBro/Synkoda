@@ -19,11 +19,16 @@ Display::Display()
   }
 }
 
+void Display::setColour(int ring, CHSV colour)
+{
+  _colours[ring] = colour;
+}
+
 void Display::setLevel(int ring, int level)
 {
   int index = _indexes[ring];
   int rotation = _rotations[ring];
-  int hue = hues[ring];
+  CHSV colour = _colours[ring];
 
   int numLights = ((level / maxMidiValue) * 16.0);
   int mod = (level - (numLights * subDivisions));
@@ -34,15 +39,15 @@ void Display::setLevel(int ring, int level)
     rotated = rotated < 0 ? rotated + numLedsPerRing : rotated;
     if (numLedsPerRing - rotated % numLedsPerRing == numLights)
     {
-      _leds[l] = CHSV(hue, 255, 255);
+      _leds[l] = colour;
     }
     else if (numLedsPerRing - rotated % numLedsPerRing < numLights)
     {
-      _leds[l] = CHSV(hue+_seeds[l]-12, 255, _seeds[l]*10);
+      _leds[l] = CHSV(colour.h+_seeds[l]-12, colour.s, _seeds[l]*10);
     }
     else if (numLedsPerRing - rotated % numLedsPerRing == numLights+1)
     {
-      _leds[l] = CHSV(hue, 255, 255/8.0 * extra);
+      _leds[l] = CHSV(colour.h, colour.s, 255/8.0 * extra);
     }
     else
     {
