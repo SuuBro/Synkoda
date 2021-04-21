@@ -43,12 +43,11 @@ int _bankCCMap[NUM_VALUES][NUM_VALUES] = {
   {MIDICC_DELAYAMOUNT, MIDICC_DELAYRATE, MIDICC_REVERBAMOUNT, MIDICC_SIDECHAINAMOUNT},
 };
 
-int _currentBank = 0;
+int _currentBank = 1;
 int _ccValues[NUM_CHANNELS][NUM_MIDICCS] = {0};
 int _channel = 0;
 int _channelState = 0;
 float _maxCpu = 0;
-int _inertia = 0;
 
 void OnControlChange (byte channel, byte control, byte value)
 {
@@ -87,11 +86,10 @@ void setup(void)
   Serial.println("SETUP FINISHED");
 }
 
-
-
-void handleButtonPress(int buttonIndex)
+void onButtonPress(int buttonIndex)
 {
-  if(buttonIndex < 4){
+  if (buttonIndex < 4)
+  {
     for (size_t ring = 0; ring < 4; ring++)
     {
       _currentBank = buttonIndex;
@@ -100,10 +98,48 @@ void handleButtonPress(int buttonIndex)
   }
 }
 
-void loop() {
+void checkForButtonPress(int index)
+{
+  int newBtnState = digitalRead(buttonPins[index]);
+  if (newBtnState != buttonStates[index])
+  {
+    buttonStates[index] = newBtnState;
+    if (buttonStates[index] == 1)
+    {
+      onButtonPress(index);
+    }
+  }
+}
 
-  usbMIDI.read();
+void checkForEncoderTurn(int index)
+{
+  long change = encoders[index]->read();
+  if (change != 0)
+  {
+    change = encoders[index]->readAndReset();
+    Serial.print("Encoder ");
+    Serial.print(index);
+    Serial.print(": ");
+    int cc = _bankCCMap[_currentBank][index];
+    int oldValue = _ccValues[_channel][cc];
+    int newValue = oldValue + change;
+    if (newValue < 0)
+    {
+      newValue = 0;
+    }
+    else if (newValue >= 127)
+    {
+      newValue = 127;
+    }
+    Serial.print(newValue);
+    Serial.println(" ");
+    _ccValues[_channel][cc] = newValue;
+    usbMIDI.sendControlChange(cc, newValue, _channel);
+  }
+}
 
+void checkForChannelChange()
+{
   long channelChange = encoders[4]->readAndReset();
   if(channelChange != 0){
     Serial.print("Encoder 4:");
@@ -116,49 +152,24 @@ void loop() {
     }
     _channel = _channelState/16;
     Serial.println(_channel);
-    display.setLevel(4, _channel);
   }
+}
+
+void loop() {
+
+  usbMIDI.read();
 
   for(int i = 0; i < NUM_VALUES; ++i)
   {
-    int newBtnState = digitalRead(buttonPins[i]);
-    if(newBtnState != buttonStates[i])
-    {
-      buttonStates[i] = newBtnState;
-      if (buttonStates[i] == 1)
-      {
-         handleButtonPress(i);
-      }
-    }
-
-    long change = encoders[i]->readAndReset();
-    if(change != 0)
-    {
-      if((change > 0 && _inertia <= 0) || (change < 0 && _inertia >= 0)){
-        _inertia = change;
-        break;
-      }
-      _inertia = change;
-      Serial.print("Encoder ");
-      Serial.print(i);
-      Serial.print(": ");
-      int cc = _bankCCMap[_currentBank][i];
-      int oldValue = _ccValues[_channel][cc];
-      int newValue = oldValue + change;
-      if(newValue < 0){
-        newValue = 0;
-      }
-      else if(newValue >= 127){
-        newValue = 127;
-      }
-      Serial.print(newValue);
-      Serial.println(" ");
-      _ccValues[_channel][cc] = newValue;
-      usbMIDI.sendControlChange(cc, newValue, _channel);
-    }
+    checkForButtonPress(i);
+    checkForEncoderTurn(i);
 
     display.setLevel(i, _ccValues[_channel][_bankCCMap[_currentBank][i]]);
   }
+
+  checkForChannelChange();
+
+  display.setLevel(4, _channel);
 
   if(AudioProcessorUsageMax() > _maxCpu){
     _maxCpu = AudioProcessorUsageMax();
