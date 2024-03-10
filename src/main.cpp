@@ -21,7 +21,7 @@ Encoder myEnc2(27, 28);
 Encoder myEnc3(32, 31);
 Encoder myEnc4(29, 30);
 
-Encoder* encoders[NUM_ENCODERS] = {&myEnc0, &myEnc1, &myEnc3, &myEnc2, &myEnc4};
+Encoder* encoders[NUM_ENCODERS] = {&myEnc0, &myEnc1, &myEnc2, &myEnc3, &myEnc4};
 
 Display display = Display();
 
@@ -120,8 +120,8 @@ void checkForEncoderTurn(int index)
   if (change != 0)
   {
     change = encoders[index]->readAndReset();
-    //Serial.print("Encoder ");
-    //Serial.print(index);
+    Serial.print("Encoder ");
+    Serial.print(index);
     //Serial.print(": ");
     int cc = _bankCCMap[_currentBank][index];
     int oldValue = _ccValues[_channel][cc];

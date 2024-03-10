@@ -35,8 +35,8 @@ public:
 
 private:
   CRGB _leds[80];
-  int _indexes[5] = {48, 32, 0, 16, 64};
-  int _rotations[5] = {9, 11, 13, 12, 5};
+  int _indexes[5] = {48, 32, 16, 0, 64};
+  int _rotations[5] = {9, 11, 12, 13, 5};
   int _seeds[80];
   CHSV _colours[5] = {
       CHSV(100, 255, 100),
