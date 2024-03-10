@@ -67,7 +67,6 @@ void Display::setLevel(int ring, int level)
     {
       int rotated = l - rotation - 1;
       rotated = rotated < 0 ? rotated + numLedsPerRing : rotated;
-      Serial.println(numLedsPerRing - rotated % numLedsPerRing);
       if (numLedsPerRing - rotated % numLedsPerRing >= firstIndex+1
        && numLedsPerRing - rotated % numLedsPerRing < lastIndex+1)
       {

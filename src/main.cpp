@@ -1,4 +1,3 @@
-#include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
@@ -18,11 +17,11 @@ const int NUM_MIDICCS = 128;
 
 Encoder myEnc0(25, 26);
 Encoder myEnc1(33, 34);
-Encoder myEnc2(32, 31);
-Encoder myEnc3(27, 28);
+Encoder myEnc2(27, 28);
+Encoder myEnc3(32, 31);
 Encoder myEnc4(29, 30);
 
-Encoder* encoders[NUM_ENCODERS] = {&myEnc0, &myEnc1, &myEnc2, &myEnc3, &myEnc4};
+Encoder* encoders[NUM_ENCODERS] = {&myEnc0, &myEnc1, &myEnc3, &myEnc2, &myEnc4};
 
 Display display = Display();
 
@@ -36,7 +35,7 @@ CHSV _bankColours[NUM_VALUES] = {
   CHSV(220, 255, 255),
 };
 
-int _bankCCMap[NUM_VALUES][NUM_VALUES] = {
+int _bankCCMap[NUM_ENCODERS][NUM_VALUES] = {
   {MIDICC_OSCP1, MIDICC_OSCP2, MIDICC_OSCP3, MIDICC_OSCP4},
   {MIDICC_ENV1ATTACK, MIDICC_ENV1DECAY, MIDICC_ENV1SUSTAIN, MIDICC_ENV1RELEASE},
   {MIDICC_VOLUME, MIDICC_PAN, MIDICC_EQBASS, MIDICC_EQTREBLE},
@@ -49,17 +48,23 @@ int _channel = 0;
 int _channelState = 0;
 float _maxCpu = 0;
 
-void OnControlChange (byte channel, byte control, byte value)
+int fromMidiChannel(byte midiChannel)
 {
-  _ccValues[channel][control] = value;
+  return (midiChannel-1);
 }
 
-void OnNoteOn(byte channel, byte note, byte velocity)
+byte toMidiChannel(int channelIndex)
 {
+  return (channelIndex+1);
 }
 
-void OnNoteOff(byte channel, byte note, byte velocity)
+void OnControlChange(byte channel, byte control, byte value)
 {
+  Serial.println("OnControlChange");
+  Serial.println(channel);
+  Serial.println(control);
+  Serial.println(value);
+  _ccValues[fromMidiChannel(channel)][control] = value;
 }
 
 void setup(void)
@@ -80,17 +85,15 @@ void setup(void)
   LEDS.setBrightness(150);
 
   usbMIDI.setHandleControlChange(OnControlChange);
-  usbMIDI.setHandleNoteOn(OnNoteOn);
-  usbMIDI.setHandleNoteOff(OnNoteOff);
 
   Serial.println("SETUP FINISHED");
 }
 
 void onButtonPress(int buttonIndex)
 {
-  if (buttonIndex < 4)
+  if (buttonIndex < NUM_VALUES)
   {
-    for (size_t ring = 0; ring < 4; ring++)
+    for (size_t ring = 0; ring < NUM_VALUES; ring++)
     {
       _currentBank = buttonIndex;
       display.setColour(ring, _bankColours[buttonIndex]);
@@ -117,9 +120,9 @@ void checkForEncoderTurn(int index)
   if (change != 0)
   {
     change = encoders[index]->readAndReset();
-    Serial.print("Encoder ");
-    Serial.print(index);
-    Serial.print(": ");
+    //Serial.print("Encoder ");
+    //Serial.print(index);
+    //Serial.print(": ");
     int cc = _bankCCMap[_currentBank][index];
     int oldValue = _ccValues[_channel][cc];
     int newValue = oldValue + change;
@@ -131,10 +134,10 @@ void checkForEncoderTurn(int index)
     {
       newValue = 127;
     }
-    Serial.print(newValue);
-    Serial.println(" ");
+    //Serial.print(newValue);
+    //Serial.println(" ");
     _ccValues[_channel][cc] = newValue;
-    usbMIDI.sendControlChange(cc, newValue, _channel);
+    usbMIDI.sendControlChange(cc, newValue, toMidiChannel(_channel));
   }
 }
 
@@ -170,10 +173,4 @@ void loop() {
   checkForChannelChange();
 
   display.setLevel(4, _channel);
-
-  if(AudioProcessorUsageMax() > _maxCpu){
-    _maxCpu = AudioProcessorUsageMax();
-    Serial.print("CPUMAX: ");
-    Serial.println(_maxCpu);
-  }
 }
